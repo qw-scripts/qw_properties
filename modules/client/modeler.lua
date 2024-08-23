@@ -5,7 +5,8 @@ local spawnedProps = {}
 local editingEntity = nil
 local startingRotation = nil
 local startingPosition = nil
-local camera
+local camera = nil
+
 local IsDisabledControlPressed = IsDisabledControlPressed
 local SetCamCoord = SetCamCoord
 local SetCamRot = SetCamRot
