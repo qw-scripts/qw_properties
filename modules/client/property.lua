@@ -68,13 +68,22 @@ end
 
 function property.enterProperty(data)
     if currentProperty then return end
+    if not data.shell then return end
+
+    local propertyData = nil
+
+    for i = 1, #config.shells do
+        if config.shells[i].model == data.shell then
+            propertyData = config.shells[i]
+            break
+        end
+    end
+
+    if not propertyData then return end
+
     lib.hideTextUI()
     lastCoords = GetEntityCoords(cache.ped)
     lastHeading = GetEntityHeading(cache.ped)
-
-    if not data.shell then return end
-
-    local propertyData = config.shellData[data.shell]
 
     local shellCoords = data.position - vector3(0.0, 0.0, 45.0)
     local offset = propertyData.exit
@@ -120,7 +129,8 @@ function property.newPropertyCreator()
     for i = 1, #config.shells do
         local shell = config.shells[i]
         local option = {
-            value = shell,
+            value = shell.model,
+            label = shell.label,
         }
         modelInput.options[i] = option
     end
