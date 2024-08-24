@@ -1,4 +1,5 @@
 local config = lib.load('modules.client.config')
+local anims = lib.load('modules.client.anims')
 
 local lastCoords = nil
 local lastHeading = nil
@@ -43,6 +44,9 @@ end
 
 function property.leaveProperty()
     if not currentProperty then return end
+
+    anims.unlockAnimation()
+    Wait(700)
 
     DoScreenFadeOut(500)
     while not IsScreenFadedOut() do
@@ -97,6 +101,9 @@ function property.enterProperty(data)
     local offsetCoords = GetOffsetFromEntityInWorldCoords(object, offset.x, offset.y, offset.z)
 
     currentProperty = object
+
+    anims.unlockAnimation()
+    Wait(700)
 
     DoScreenFadeOut(500)
     while not IsScreenFadedOut() do
@@ -171,11 +178,29 @@ function property.newPropertyCreator()
     return data
 end
 
+AddEventHandler('onResourceStart', function(resource)
+    if resource == GetCurrentResourceName() then
+        Wait(2000)
+        local data = property.getProperties()
+
+        for k, v in pairs(data) do
+            local point = property.createPropertyPoint(v, '[**E**] - Enter Property', function()
+                property.enterProperty(v)
+            end)
+            v.point = point
+
+            properties[v.id] = v
+        end
+    end
+end)
+
 AddEventHandler('onResourceStop', function(resource)
     if resource == GetCurrentResourceName() then
         for k, v in pairs(properties) do
-            lib.hideTextUI()
-            v.point:remove()
+            if v then
+                lib.hideTextUI()
+                v.point:remove()
+            end
         end
     end
 end)
