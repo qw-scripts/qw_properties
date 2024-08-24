@@ -8,20 +8,28 @@ RegisterCommand('dev:placement', function(_, args)
 
     local model = args[1] or 'prop_beach_lilo_01'
 
-    local data = modeler.startPlacement({
+    local data, message = modeler.startPlacement({
         model = model
     })
 
-    if data then
-        local pos = data.position
-        local rot = data.rotation
-        local handle = data.handle
-
-        SetEntityCoords(handle, pos.x, pos.y, pos.z)
-        SetEntityRotation(handle, rot.x, rot.y, rot.z)
-        FreezeEntityPosition(handle, true)
-        SetModelAsNoLongerNeeded(model)
+    if not data and message then
+        modeler.showMenu(false)
+        lib.notify({
+            description = 'Properties',
+            title = message,
+            type = 'error'
+        })
+        return
     end
+
+    local pos = data.position
+    local rot = data.rotation
+    local handle = data.handle
+
+    SetEntityCoords(handle, pos.x, pos.y, pos.z)
+    SetEntityRotation(handle, rot.x, rot.y, rot.z)
+    FreezeEntityPosition(handle, true)
+    SetModelAsNoLongerNeeded(model)
 end)
 
 RegisterCommand('decorate', function()

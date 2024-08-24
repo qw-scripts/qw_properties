@@ -105,17 +105,14 @@ function modeler.startPlacement(data)
 
     local objectSpawnPos = GetEntityCoords(cache.ped) + GetEntityForwardVector(cache.ped) * 3.0
 
-    local hash = GetHashKey(model)
-
-    if not IsModelInCdimage(hash) or not IsModelValid(hash) then
-        return
+    if not IsModelInCdimage(model) then
+        return false, 'Invalid model'
     end
 
-    lib.requestModel(hash)
+    lib.requestModel(model, 1000)
 
-    local currentObject = obj.createObjectForPlacement(hash, objectSpawnPos)
+    local currentObject = obj.createObjectForPlacement(model, objectSpawnPos)
 
-    SetNuiFocusKeepInput(true)
     SendNUIMessage({
         action = "controlModel",
         data = {
@@ -132,7 +129,7 @@ function modeler.startPlacement(data)
 
     local gizmoData = exports.object_gizmo:useGizmo(currentObject)
 
-    return gizmoData
+    return gizmoData, nil
 end
 
 function modeler.removePlaced(entityId)

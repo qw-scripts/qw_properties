@@ -196,6 +196,10 @@ end)
 
 AddEventHandler('onResourceStop', function(resource)
     if resource == GetCurrentResourceName() then
+        if currentProperty then
+            SetEntityCoords(cache.ped, lastCoords)
+            SetEntityHeading(cache.ped, lastHeading)
+        end
         for k, v in pairs(properties) do
             if v then
                 lib.hideTextUI()
