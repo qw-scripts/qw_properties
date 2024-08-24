@@ -1,5 +1,6 @@
 local config = lib.load('modules.client.config')
 local anims = lib.load('modules.client.anims')
+local modeler = lib.load('modules.client.modeler')
 
 local lastCoords = nil
 local lastHeading = nil
@@ -67,6 +68,9 @@ function property.leaveProperty()
         currentExit:remove()
         currentExit = nil
     end
+
+    lib.removeRadialItem('housing')
+
     DoScreenFadeIn(1000)
 end
 
@@ -112,6 +116,28 @@ function property.enterProperty(data)
 
     SetEntityCoords(cache.ped, offsetCoords)
     SetEntityHeading(cache.ped, offset.w)
+
+    lib.registerRadial({
+        id = 'housing_menu',
+        items = {
+            {
+                label = 'Decorate',
+                icon = 'paint-brush',
+                onSelect = function()
+                    modeler.showMenu(true)
+                end
+            }
+        }
+    })
+
+    lib.addRadialItem({
+        {
+            id = 'housing',
+            label = 'Housing',
+            icon = 'home',
+            menu = 'housing_menu'
+        },
+    })
 
     currentExit = property.createPropertyPoint({
         position = offsetCoords
